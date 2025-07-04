@@ -34,7 +34,6 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   };
 
   useEffect(() => {
-    // try to restore session
     peraWallet.reconnectSession().then((accounts) => {
       if (accounts.length > 0) {
         setAccount(accounts[0]);

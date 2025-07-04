@@ -17,7 +17,6 @@ function App() {
   };
 
   useEffect(() => {
-    // Restore session if already connected
     peraWallet.reconnectSession().then((accounts) => {
       if (accounts.length) {
         setAccount(accounts[0]);

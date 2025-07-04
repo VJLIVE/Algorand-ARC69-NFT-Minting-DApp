@@ -1,14 +1,12 @@
 import algosdk from "algosdk";
 import { PeraWalletConnect } from "@perawallet/connect";
 
-// Initialize Algod client
 const algodClient = new algosdk.Algodv2(
   "",
   "https://testnet-api.algonode.cloud",
   ""
 );
 
-// Initialize PeraWallet
 export const peraWallet = new PeraWalletConnect();
 
 export async function createAsset(form: Record<string, any>, account: string) {
