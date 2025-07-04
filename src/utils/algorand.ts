@@ -1,11 +1,7 @@
 import algosdk from "algosdk";
 import { PeraWalletConnect } from "@perawallet/connect";
 
-const algodClient = new algosdk.Algodv2(
-  "",
-  "https://testnet-api.algonode.cloud",
-  ""
-);
+export const algodClient = new algosdk.Algodv2("", "https://testnet-api.algonode.cloud", "");
 
 export const peraWallet = new PeraWalletConnect();
 
@@ -31,39 +27,23 @@ export async function createAsset(form: Record<string, any>, account: string) {
   const signedTxns = await peraWallet.signTransaction([txnGroup]);
 
   const sendTx = await algodClient.sendRawTransaction(signedTxns).do();
-
   const txid = sendTx.txid;
 
   await waitForConfirmation(algodClient, txid, 4);
-
   const ptx = await algodClient.pendingTransactionInformation(txid).do();
-  const assetID = Number(ptx.assetIndex);
 
-  return assetID;
+  return Number(ptx.assetIndex);
 }
 
-async function waitForConfirmation(
-  client: algosdk.Algodv2,
-  txid: string,
-  timeout: number
-) {
+async function waitForConfirmation(client: algosdk.Algodv2, txid: string, timeout: number) {
   const status = await client.status().do();
-  const startRound =
-    (typeof status.lastRound === "bigint"
-      ? Number(status.lastRound)
-      : status.lastRound) + 1;
+  let currentRound =
+    (typeof status.lastRound === "bigint" ? Number(status.lastRound) : status.lastRound) + 1;
 
-  let currentRound = startRound;
-
-  while (currentRound < startRound + timeout) {
+  while (timeout-- > 0) {
     const pendingInfo = await client.pendingTransactionInformation(txid).do();
-
-    if (pendingInfo && pendingInfo.confirmedRound) {
-      return pendingInfo;
-    }
-
-    await client.statusAfterBlock(currentRound).do();
-    currentRound += 1;
+    if (pendingInfo.confirmedRound) return pendingInfo;
+    await client.statusAfterBlock(currentRound++).do();
   }
 
   throw new Error(`Transaction ${txid} not confirmed within timeout`);

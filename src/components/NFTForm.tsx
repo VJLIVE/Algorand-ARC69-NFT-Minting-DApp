@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { createAsset } from "../utils/algorand";
 
-const NFTForm: React.FC<{
+type NFTFormProps = {
   onComplete: (assetId: number) => void;
   account: string;
-}> = ({ onComplete, account }) => {
+  ipfsUrl: string;
+};
+
+const NFTForm: React.FC<NFTFormProps> = ({ onComplete, account, ipfsUrl }) => {
   const [form, setForm] = useState({
     unitName: "",
     assetName: "",
-    url: "",
     total: 1,
     decimals: 0,
   });
@@ -22,8 +24,10 @@ const NFTForm: React.FC<{
   };
 
   const handleSubmit = async () => {
+    if (!ipfsUrl) return alert("Please upload an image first.");
+
     setLoading(true);
-    const assetId = await createAsset(form, account).catch((err) => {
+    const assetId = await createAsset({ ...form, url: ipfsUrl }, account).catch((err) => {
       alert(err.message);
       setLoading(false);
     });

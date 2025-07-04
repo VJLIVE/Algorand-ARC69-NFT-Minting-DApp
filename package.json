@@ -13,6 +13,7 @@
     "@perawallet/connect": "^1.4.2",
     "@tailwindcss/postcss": "^4.1.11",
     "algosdk": "^3.3.1",
+    "axios": "^1.10.0",
     "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.1",
     "path-browserify": "^1.0.1",
