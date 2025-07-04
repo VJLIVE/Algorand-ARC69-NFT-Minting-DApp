@@ -53,7 +53,7 @@ const Home: React.FC = () => {
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 1 }}
         >
-          🧬 Algorand ARC69 NFT Minter
+          Algorand ARC69 NFT Minter
         </motion.h1>
 
         <motion.p
