@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const PINATA_JWT = import.meta.env.PINATA_JWT;
+const PINATA_JWT = import.meta.env.VITE_PINATA_JWT_TOKEN;
 
 const PinataUpload: React.FC<{ onUpload: (ipfsHash: string) => void }> = ({ onUpload }) => {
   const [file, setFile] = useState<File | null>(null);
