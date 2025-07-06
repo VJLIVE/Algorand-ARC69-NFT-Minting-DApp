@@ -1,7 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { PeraWalletConnect } from "@perawallet/connect";
-
-const peraWallet = new PeraWalletConnect();
+import peraWallet from "../utils/peraWallet";
 
 type WalletContextType = {
   account: string | null;

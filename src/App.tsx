@@ -1,58 +1,22 @@
-import { useEffect, useState } from "react";
-import "./App.css";
-import { peraWallet } from "./utils/algorand";
-import NFTForm from "./components/NFTForm";
-import PinataUpload from "./utils/PinataUpload";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import HomePage from "./pages/Home";
+import MintPage from "./pages/Mint";
+import { WalletProvider } from "./context/WalletContext";
 
 function App() {
-  const [account, setAccount] = useState<string>("");
-  const [ipfsHash, setIpfsHash] = useState<string>("");
-
-  const connectWallet = async () => {
-    try {
-      const accounts = await peraWallet.connect();
-      setAccount(accounts[0]);
-    } catch (err) {
-      alert("Failed to connect wallet. Make sure Pera Wallet is installed.");
-      console.error(err);
-    }
-  };
-
-  useEffect(() => {
-    peraWallet.reconnectSession().then((accounts) => {
-      if (accounts.length) {
-        setAccount(accounts[0]);
-      }
-    });
-  }, []);
-
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4 space-y-6">
-      {!account ? (
-        <button
-          onClick={connectWallet}
-          className="px-4 py-2 bg-green-500 text-white rounded"
-        >
-          Connect Wallet
-        </button>
-      ) : (
-        <div className="w-full max-w-md space-y-4">
-          <div className="text-center">
-            Connected Account: <b>{account}</b>
-          </div>
-
-          <PinataUpload onUpload={(hash) => setIpfsHash(hash)} />
-
-          <NFTForm
-            account={account}
-            onComplete={(assetId) =>
-              alert(`NFT Created successfully! Asset ID: ${assetId}`)
-            }
-            ipfsUrl={ipfsHash ? `https://ipfs.io/ipfs/${ipfsHash}` : ""}
-          />
+    <WalletProvider>
+      <Router>
+        <div className="min-h-screen bg-gray-50">
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/mint" element={<MintPage />} />
+          </Routes>
         </div>
-      )}
-    </div>
+      </Router>
+    </WalletProvider>
   );
 }
 
