@@ -8,12 +8,14 @@ function App() {
   return (
     <WalletProvider>
       <Router>
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-blue-950 text-white">
           <Navbar />
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/mint" element={<MintPage />} />
-          </Routes>
+          <main className="pt-24 px-4">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/mint" element={<MintPage />} />
+            </Routes>
+          </main>
         </div>
       </Router>
     </WalletProvider>

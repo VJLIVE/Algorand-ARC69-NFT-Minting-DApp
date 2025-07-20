@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { motion } from "framer-motion";
 
 const PINATA_JWT = import.meta.env.VITE_PINATA_JWT_TOKEN;
 
@@ -15,7 +16,6 @@ const PinataUpload: React.FC<{ onUpload: (ipfsHash: string) => void }> = ({ onUp
 
   const handleUpload = async () => {
     if (!file) return alert("Please select a file first.");
-
     setLoading(true);
 
     const formData = new FormData();
@@ -41,16 +41,38 @@ const PinataUpload: React.FC<{ onUpload: (ipfsHash: string) => void }> = ({ onUp
   };
 
   return (
-    <div className="space-y-2 p-4 bg-white rounded shadow">
-      <input type="file" onChange={handleChange} />
-      <button
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="space-y-4 p-6 bg-gray-900 rounded-2xl shadow-lg text-white"
+    >
+      <h2 className="text-lg font-bold">Upload File to IPFS</h2>
+
+      <input
+        type="file"
+        onChange={handleChange}
+        className="w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4
+        file:rounded-full file:border-0
+        file:text-sm file:font-semibold
+        file:bg-blue-600 file:text-white
+        hover:file:bg-blue-700"
+      />
+
+      <motion.button
+        whileHover={{ scale: !loading ? 1.05 : 1 }}
+        whileTap={{ scale: !loading ? 0.95 : 1 }}
         onClick={handleUpload}
         disabled={loading || !file}
-        className="px-4 py-2 bg-blue-600 text-white rounded"
+        className={`w-full px-4 py-2 rounded text-white text-sm font-medium transition-all ${
+          loading
+            ? "bg-gray-600 cursor-not-allowed"
+            : "bg-blue-600 hover:bg-blue-700"
+        }`}
       >
         {loading ? "Uploading..." : "Upload to IPFS"}
-      </button>
-    </div>
+      </motion.button>
+    </motion.div>
   );
 };
 

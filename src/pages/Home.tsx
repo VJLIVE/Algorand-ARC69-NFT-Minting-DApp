@@ -5,7 +5,7 @@ import { Droplet, Link as LinkIcon, Rocket, Info, Wrench } from "lucide-react";
 
 const Home = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-slate-900 to-blue-900 px-4 pt-20 pb-10 flex items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-br from-black via-slate-900 to-blue-900 px-4 pt-5 pb-10 flex items-center justify-center">
       <div className="bg-white/10 backdrop-blur-md rounded-3xl shadow-2xl p-10 max-w-5xl w-full text-center border border-white/10">
         <motion.div
           initial={{ y: -30, opacity: 0 }}
