@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { createAsset } from "../utils/algorand";
+import toast from "react-hot-toast";
 
 type NFTFormProps = {
   onComplete: (assetId: number) => void;
@@ -25,7 +26,7 @@ const NFTForm: React.FC<NFTFormProps> = ({ onComplete, account, ipfsUrl }) => {
 
   const handleSubmit = async () => {
     if (!ipfsUrl) {
-      alert("⚠️ Please upload an image first.");
+      toast.error("⚠️ Please upload an image first.");
       return;
     }
 

@@ -2,10 +2,13 @@ import { useState } from "react";
 import { useWallet } from "../context/WalletContext";
 import NFTForm from "../components/NFTForm";
 import PinataUpload from "../utils/PinataUpload";
+import toast from "react-hot-toast";
 
 const MintPage = () => {
   const { account } = useWallet();
   const [ipfsHash, setIpfsHash] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [mintedAssetId, setMintedAssetId] = useState<number | null>(null);
 
   if (!account) {
     return (
@@ -54,10 +57,41 @@ const MintPage = () => {
           <NFTForm
             account={account}
             ipfsUrl={ipfsHash ? `https://ipfs.io/ipfs/${ipfsHash}` : ""}
-            onComplete={(assetId) =>
-              alert(`🎉 NFT Created successfully! Asset ID: ${assetId}`)
-            }
+            onComplete={(assetId) => {
+              toast.success(`🎉 NFT Created! Asset ID: ${assetId}`);
+              setMintedAssetId(assetId);
+              setShowModal(true);
+            }}
           />
+          {showModal && mintedAssetId && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4">
+              <div className="bg-gray-900 text-white rounded-xl shadow-2xl max-w-sm w-full p-6 text-center space-y-4">
+                <h2 className="text-2xl font-bold text-green-400 flex items-center justify-center gap-2">
+                  🎨 NFT Minted!
+                </h2>
+                <p className="text-gray-300">
+                  Your NFT was successfully minted with Asset ID:
+                </p>
+                <div className="bg-gray-800 text-green-300 font-mono text-sm px-3 py-2 rounded mt-2 break-all">
+                  {mintedAssetId}
+                </div>
+                <a
+                  href={`https://testnet.explorer.perawallet.app/asset/${mintedAssetId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block mt-2 mr-4 text-blue-400 underline hover:text-blue-300"
+                >
+                  🔗 View on AlgoExplorer
+                </a>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-white shadow"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

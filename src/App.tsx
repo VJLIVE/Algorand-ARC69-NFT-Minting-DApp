@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar";
 import HomePage from "./pages/Home";
 import MintPage from "./pages/Mint";
 import { WalletProvider } from "./context/WalletContext";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             </Routes>
           </main>
         </div>
+        <Toaster position="top-right" />
       </Router>
     </WalletProvider>
   );
