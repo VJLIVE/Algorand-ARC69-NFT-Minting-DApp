@@ -1,41 +1,13 @@
 import { Link, useLocation } from "react-router-dom";
-import { PeraWalletConnect } from "@perawallet/connect";
-import { useEffect, useState } from "react";
+import { useWallet } from "../context/WalletContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { LogIn, LogOut, Ticket, Menu, X } from "lucide-react";
-
-const peraWallet = new PeraWalletConnect();
+import { useState } from "react";
 
 const Navbar = () => {
-  const [accountAddress, setAccountAddress] = useState<string | null>(null);
+  const { account, connect, disconnect } = useWallet();
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
-
-  useEffect(() => {
-    peraWallet.reconnectSession().then((accounts) => {
-      if (accounts.length) {
-        setAccountAddress(accounts[0]);
-        peraWallet.connector?.on("disconnect", () => setAccountAddress(null));
-      }
-    });
-  }, []);
-
-  const handleConnect = async () => {
-    try {
-      const accounts = await peraWallet.connect();
-      if (accounts.length > 0) {
-        setAccountAddress(accounts[0]);
-        peraWallet.connector?.on("disconnect", () => setAccountAddress(null));
-      }
-    } catch (error) {
-      console.error("Wallet connect error:", error);
-    }
-  };
-
-  const handleDisconnect = () => {
-    peraWallet.disconnect();
-    setAccountAddress(null);
-  };
 
   return (
     <>
@@ -64,7 +36,7 @@ const Navbar = () => {
           >
             Home
           </Link>
-          {accountAddress && (
+          {account && (
             <Link
               to="/mint"
               className={`text-sm font-medium ${
@@ -75,13 +47,13 @@ const Navbar = () => {
             </Link>
           )}
 
-          {accountAddress ? (
+          {account ? (
             <>
               <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-mono tracking-wide">
-                {accountAddress.slice(0, 6)}...{accountAddress.slice(-4)}
+                {account.slice(0, 6)}...{account.slice(-4)}
               </span>
               <button
-                onClick={handleDisconnect}
+                onClick={disconnect}
                 className="flex items-center gap-2 px-3 py-2 bg-red-600 text-white text-xs rounded-full hover:bg-red-700 transition"
               >
                 <LogOut size={16} />
@@ -92,7 +64,7 @@ const Navbar = () => {
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
-              onClick={handleConnect}
+              onClick={connect}
               className="relative flex items-center gap-2 overflow-hidden px-6 py-2 rounded-full bg-blue-600 text-white text-sm font-semibold transition-all duration-300 hover:bg-blue-700 focus:outline-none"
             >
               <div className="z-10">
@@ -122,10 +94,6 @@ const Navbar = () => {
             transition={{ duration: 0.3 }}
             className="fixed top-0 right-0 w-64 h-full bg-black shadow-xl z-40 pt-20 px-6 space-y-6 md:hidden"
           >
-            <div className="flex justify-between items-center mb-4">
-              <p className="text-lg font-bold text-blue-400">Menu</p>
-            </div>
-
             <Link
               to="/"
               onClick={() => setMenuOpen(false)}
@@ -133,7 +101,7 @@ const Navbar = () => {
             >
               Home
             </Link>
-            {accountAddress && (
+            {account && (
               <Link
                 to="/mint"
                 onClick={() => setMenuOpen(false)}
@@ -143,14 +111,14 @@ const Navbar = () => {
               </Link>
             )}
 
-            {accountAddress ? (
+            {account ? (
               <>
                 <div className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-mono tracking-wide">
-                  {accountAddress.slice(0, 6)}...{accountAddress.slice(-4)}
+                  {account.slice(0, 6)}...{account.slice(-4)}
                 </div>
                 <button
                   onClick={() => {
-                    handleDisconnect();
+                    disconnect();
                     setMenuOpen(false);
                   }}
                   className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white text-xs rounded-full hover:bg-red-700 transition"
@@ -162,7 +130,7 @@ const Navbar = () => {
             ) : (
               <button
                 onClick={() => {
-                  handleConnect();
+                  connect();
                   setMenuOpen(false);
                 }}
                 className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm rounded-full hover:bg-blue-700 transition"
