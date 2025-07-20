@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import algorandLogo from "/algorand.svg";
 import { motion } from "framer-motion";
-import { Droplet, Link as LinkIcon, Rocket, Info, Wrench } from "lucide-react";
+import { Droplet, Link as LinkIcon, Rocket, Info, Wrench, Upload } from "lucide-react";
 
 const Home = () => {
   return (
@@ -24,12 +24,12 @@ const Home = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
           {[
             {
-              icon: <Droplet size={28} />,
+              icon: <LinkIcon size={28} />,
               title: "Connect Wallet",
               desc: "Easily connect your Algorand Testnet wallet via Pera Wallet.",
             },
             {
-              icon: <LinkIcon size={28} />,
+              icon: <Upload size={28} />,
               title: "Upload to IPFS",
               desc: "Upload your image or media file to IPFS via Pinata.",
             },
