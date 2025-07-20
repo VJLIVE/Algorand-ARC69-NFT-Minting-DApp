@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
+import ProgressBar from "../components/ProgressBar";
 
 const PINATA_JWT = import.meta.env.VITE_PINATA_JWT_TOKEN;
 
 const PinataUpload: React.FC<{ onUpload: (ipfsHash: string) => void }> = ({ onUpload }) => {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -17,7 +19,10 @@ const PinataUpload: React.FC<{ onUpload: (ipfsHash: string) => void }> = ({ onUp
   const handleUpload = async () => {
     if (!file) return alert("Please select a file first.");
     setLoading(true);
-
+    setProgress(0);
+    const interval = setInterval(() => {
+    setProgress((prev) => (prev < 90 ? prev + 10 : prev));
+  }, 300);
     const formData = new FormData();
     formData.append("file", file);
 
@@ -29,14 +34,18 @@ const PinataUpload: React.FC<{ onUpload: (ipfsHash: string) => void }> = ({ onUp
           Authorization: `Bearer ${PINATA_JWT}`,
         },
       });
-
       const ipfsHash = res.data.IpfsHash;
       onUpload(ipfsHash);
+      setProgress(100);
     } catch (err) {
       console.error(err);
       alert("Failed to upload to Pinata.");
+      setProgress(0);
     } finally {
+      clearInterval(interval);
+      setTimeout(() => {
       setLoading(false);
+    }, 500);
     }
   };
 
@@ -72,6 +81,7 @@ const PinataUpload: React.FC<{ onUpload: (ipfsHash: string) => void }> = ({ onUp
       >
         {loading ? "Uploading..." : "Upload to IPFS"}
       </motion.button>
+      <ProgressBar progress={progress} color="blue" />
     </motion.div>
   );
 };
