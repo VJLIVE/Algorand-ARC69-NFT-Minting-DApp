@@ -30,21 +30,28 @@ const Navbar = () => {
         <div className="hidden md:flex space-x-4 items-center">
           <Link
             to="/"
-            className={`text-sm font-medium ${
-              location.pathname === "/" ? "text-blue-400" : "text-gray-200"
-            } hover:text-blue-300 transition`}
+            className={`text-sm font-medium ${location.pathname === "/" ? "text-blue-400" : "text-gray-200"
+              } hover:text-blue-300 transition`}
           >
             Home
           </Link>
           {account && (
-            <Link
-              to="/mint"
-              className={`text-sm font-medium ${
-                location.pathname === "/mint" ? "text-blue-400" : "text-gray-200"
-              } hover:text-blue-300 transition`}
-            >
-              Mint NFT
-            </Link>
+            <>
+              <Link
+                to="/mint"
+                className={`text-sm font-medium ${location.pathname === "/mint" ? "text-blue-400" : "text-gray-200"
+                  } hover:text-blue-300 transition`}
+              >
+                Mint NFT
+              </Link>
+              <Link
+                to="/mynfts"
+                className={`text-sm font-medium ${location.pathname === "/my-nfts" ? "text-blue-400" : "text-gray-200"
+                  } hover:text-blue-300 transition`}
+              >
+                My NFTs
+              </Link>
+            </>
           )}
 
           {account ? (
@@ -102,13 +109,22 @@ const Navbar = () => {
               Home
             </Link>
             {account && (
-              <Link
-                to="/mint"
-                onClick={() => setMenuOpen(false)}
-                className="block text-gray-200 hover:text-blue-300 text-sm font-medium"
-              >
-                Mint NFT
-              </Link>
+              <>
+                <Link
+                  to="/mint"
+                  onClick={() => setMenuOpen(false)}
+                  className="block text-gray-200 hover:text-blue-300 text-sm font-medium"
+                >
+                  Mint NFT
+                </Link>
+                <Link
+                  to="/my-nfts"
+                  onClick={() => setMenuOpen(false)}
+                  className="block text-gray-200 hover:text-blue-300 text-sm font-medium"
+                >
+                  My NFTs
+                </Link>
+              </>
             )}
 
             {account ? (

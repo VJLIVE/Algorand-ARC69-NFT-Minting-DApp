@@ -7,24 +7,25 @@ const MyNFTs = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchNFTs = async () => {
-      if (!account) return;
-      setLoading(true);
+  const fetchNFTs = async () => {
+    if (!account) return;
+    setLoading(true);
 
-      try {
-        const res = await fetch(`https://testnet.algoexplorerapi.io/v2/accounts/${account}`);
-        const data = await res.json();
-        const filtered = data.assets?.filter((a: any) => a["is-frozen"] === false);
-        setAssets(filtered);
-        console.log("Fetched assets:", data.assets);
-      } catch (error) {
-        console.error("Error fetching assets", error);
-      }
-      setLoading(false);
-    };
+    try {
+      const res = await fetch(`https://testnet-api.algonode.cloud/v2/accounts/${account}`);
+      const data = await res.json();
+      const filtered = data.assets?.filter((a: any) => a["is-frozen"] === false);
+      setAssets(filtered || []);
+      console.log("Fetched assets:", filtered);
+    } catch (error) {
+      console.error("Error fetching assets", error);
+    }
 
-    fetchNFTs();
-  }, [account]);
+    setLoading(false);
+  };
+
+  fetchNFTs();
+}, [account]);
 
   return (
     <div className="max-w-5xl mx-auto py-8 text-white">
