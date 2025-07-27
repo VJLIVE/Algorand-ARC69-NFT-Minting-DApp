@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import algorandLogo from "/algorand.svg";
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
+
 import {
   Droplet,
   Link as LinkIcon,
@@ -13,14 +15,20 @@ import { useWallet } from "../context/WalletContext";
 
 const Home = () => {
   const navigate = useNavigate();
-  const { connect } = useWallet();
-
+  const { connect, account } = useWallet();
+  
   const boxes = [
     {
       icon: <LinkIcon size={28} />,
       title: "Connect Wallet",
       desc: "Easily connect your Algorand Testnet wallet via Pera Wallet.",
-      onClick: () => connect(),
+      onClick: () => {
+        if (account) {
+          toast.error("Wallet already connected ✅");
+        } else {
+          connect();
+        }
+      },
     },
     {
       icon: <Upload size={28} />,
