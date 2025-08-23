@@ -7,7 +7,21 @@ import { useState } from "react";
 const Navbar = () => {
   const { account, connect, disconnect } = useWallet();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
   const location = useLocation();
+
+  const handleCopy = async () => {
+    if (account) {
+      try {
+        await navigator.clipboard.writeText(account);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+      } catch (err) {
+        // fallback for older browsers
+        setCopied(false);
+      }
+    }
+  };
 
   return (
     <>
@@ -56,9 +70,27 @@ const Navbar = () => {
 
           {account ? (
             <>
-              <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-mono tracking-wide">
+              <span
+                className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-mono tracking-wide cursor-pointer hover:bg-blue-700 transition"
+                title="Copy address"
+                onClick={handleCopy}
+              >
                 {account.slice(0, 6)}...{account.slice(-4)}
               </span>
+      {/* Toast notification */}
+      <AnimatePresence>
+        {copied && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="fixed top-20 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-4 py-2 rounded shadow-lg z-50 text-sm"
+          >
+            Copied to clipboard!
+          </motion.div>
+        )}
+      </AnimatePresence>
               <button
                 onClick={disconnect}
                 className="flex items-center gap-2 px-3 py-2 bg-red-600 text-white text-xs rounded-full hover:bg-red-700 transition"
@@ -129,7 +161,11 @@ const Navbar = () => {
 
             {account ? (
               <>
-                <div className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-mono tracking-wide">
+                <div
+                  className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-mono tracking-wide cursor-pointer hover:bg-blue-700 transition"
+                  title="Copy address"
+                  onClick={handleCopy}
+                >
                   {account.slice(0, 6)}...{account.slice(-4)}
                 </div>
                 <button
