@@ -22,45 +22,47 @@ const MyNFTs = () => {
             const assetInfoRes = await fetch(`https://testnet-api.algonode.cloud/v2/assets/${asset["asset-id"]}`);
             const assetInfoData = await assetInfoRes.json();
             let url = assetInfoData?.params?.url;
+            const unitName = assetInfoData?.params?.["unit-name"] || "";
+            const title = assetInfoData?.params?.name || "";
 
-                if (!url) return { ...asset, metadata: null };
+            if (!url) return { ...asset, metadata: null, unitName, title };
 
-                // Only clean url if it is truly malformed (e.g., ends with a colon)
-                if (/^.+:$/i.test(url)) url = url.slice(0, -1);
+            // Only clean url if it is truly malformed (e.g., ends with a colon)
+            if (/^.+:$/i.test(url)) url = url.slice(0, -1);
 
-                let metadata = null;
-                try {
-                  if (url.startsWith("ipfs://")) {
-                    const ipfsHash = url.replace("ipfs://", "");
-                    const metadataRes = await fetch(`https://ipfs.io/ipfs/${ipfsHash}`);
-                    const contentType = metadataRes.headers.get("content-type");
-                    if (contentType && contentType.includes("application/json")) {
-                      metadata = await metadataRes.json();
-                    } else {
-                      // Try to parse as text if not JSON
-                      metadata = { image: `https://ipfs.io/ipfs/${ipfsHash}` };
-                    }
-                  } else if (url.startsWith("https://") || url.startsWith("http://")) {
-                    const metadataRes = await fetch(url);
-                    const contentType = metadataRes.headers.get("content-type");
-                    if (contentType && contentType.includes("application/json")) {
-                      metadata = await metadataRes.json();
-                    } else {
-                      metadata = { image: url };
-                    }
-                  } else {
-                    // Fallback: treat as direct image URL
-                    metadata = { image: url };
-                  }
-                } catch (metaErr) {
-                  console.error("Error fetching/parsing metadata for asset:", asset["asset-id"], metaErr);
+            let metadata = null;
+            try {
+              if (url.startsWith("ipfs://")) {
+                const ipfsHash = url.replace("ipfs://", "");
+                const metadataRes = await fetch(`https://ipfs.io/ipfs/${ipfsHash}`);
+                const contentType = metadataRes.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                  metadata = await metadataRes.json();
+                } else {
+                  metadata = { image: `https://ipfs.io/ipfs/${ipfsHash}` };
+                }
+              } else if (url.startsWith("https://") || url.startsWith("http://")) {
+                const metadataRes = await fetch(url);
+                const contentType = metadataRes.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                  metadata = await metadataRes.json();
+                } else {
                   metadata = { image: url };
                 }
+              } else {
+                metadata = { image: url };
+              }
+            } catch (metaErr) {
+              console.error("Error fetching/parsing metadata for asset:", asset["asset-id"], metaErr);
+              metadata = { image: url };
+            }
 
-                return {
-                  ...asset,
-                  metadata,
-                };
+            return {
+              ...asset,
+              metadata,
+              unitName,
+              title,
+            };
           } catch (err) {
             console.error("Error fetching metadata for asset:", asset["asset-id"], err);
             return { ...asset, metadata: null };
@@ -112,20 +114,26 @@ const MyNFTs = () => {
                                     <span className="text-xs text-gray-400">No Image</span>
                                 </div>
                             )}
-                            <p className="text-sm font-semibold mb-1">
-                                {asset.metadata?.name || "Unnamed NFT"}
-                            </p>
-                            <p className="font-mono text-xs break-words">
-                                <span className="font-bold">Asset ID:</span> {asset["asset-id"]}
-                            </p>
-                            <a
-                                href={`https://testnet.explorer.perawallet.app/asset/${asset["asset-id"]}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-400 text-sm mt-2 block"
-                            >
-                                View on Explorer
-                            </a>
+              <p className="text-sm font-semibold mb-1">
+                {asset.title || asset.metadata?.name || "Unnamed NFT"}
+              </p>
+              <p className="text-xs mb-1">
+                <span className="font-bold">Unit Name:</span> {asset.unitName || "-"}
+              </p>
+              <p className="text-xs mb-1">
+                <span className="font-bold">Title:</span> {asset.title || "-"}
+              </p>
+              <p className="font-mono text-xs break-words">
+                <span className="font-bold">Asset ID:</span> {asset["asset-id"]}
+              </p>
+              <a
+                href={`https://testnet.explorer.perawallet.app/asset/${asset["asset-id"]}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 text-sm mt-2 block"
+              >
+                View on Explorer
+              </a>
                         </div>
                     ))}
                 </div>
