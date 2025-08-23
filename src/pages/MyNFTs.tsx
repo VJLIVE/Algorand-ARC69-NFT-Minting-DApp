@@ -1,5 +1,6 @@
 import { useWallet } from "../context/WalletContext";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const MyNFTs = () => {
     const { account } = useWallet();
@@ -82,6 +83,7 @@ const MyNFTs = () => {
   fetchNFTs();
 }, [account]);
 
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-start bg-gradient-to-br from-[#0f2027] via-[#2c5364] to-[#232526] py-12 px-2">
       <div className="max-w-6xl w-full mx-auto">
@@ -105,7 +107,9 @@ const MyNFTs = () => {
             {assets.map((asset, idx) => (
               <div
                 key={idx}
-                className="relative bg-white/10 border border-white/20 p-5 rounded-2xl shadow-xl backdrop-blur-lg transition-transform hover:scale-105 hover:shadow-2xl flex flex-col items-center"
+                className="relative bg-white/10 border border-white/20 p-5 rounded-2xl shadow-xl backdrop-blur-lg transition-transform hover:scale-105 hover:shadow-2xl flex flex-col items-center cursor-pointer"
+                onClick={() => navigate(`/nft/${asset["asset-id"]}`)}
+                title="View NFT details"
               >
                 {asset.metadata?.image ? (
                   <img
@@ -140,6 +144,7 @@ const MyNFTs = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-400 text-xs mt-2 px-3 py-1 rounded-full bg-blue-400/10 hover:bg-blue-400/30 transition font-semibold shadow"
+                    onClick={e => e.stopPropagation()}
                   >
                     View on Explorer
                   </a>

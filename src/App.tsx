@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import { WalletProvider } from "./context/WalletContext";
 import { Toaster } from "react-hot-toast";
 import MyNFTsPage from "./pages/MyNFTs";
+import NFTDetails from "./pages/NFTDetails";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/mint" element={<MintPage />} />
               <Route path="/mynfts" element={<MyNFTsPage />} />
+              <Route path="/nft/:id" element={<NFTDetails />} />
             </Routes>
           </main>
           <Footer />
