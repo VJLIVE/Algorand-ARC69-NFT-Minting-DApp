@@ -23,38 +23,44 @@ const MyNFTs = () => {
             const assetInfoData = await assetInfoRes.json();
             let url = assetInfoData?.params?.url;
 
-            if (!url) return { ...asset, metadata: null };
+                if (!url) return { ...asset, metadata: null };
 
-            // Clean malformed URLs
-            if (url.includes(":")) url = url.split(":")[0];
+                // Only clean url if it is truly malformed (e.g., ends with a colon)
+                if (/^.+:$/i.test(url)) url = url.slice(0, -1);
 
-            let metadata = null;
+                let metadata = null;
+                try {
+                  if (url.startsWith("ipfs://")) {
+                    const ipfsHash = url.replace("ipfs://", "");
+                    const metadataRes = await fetch(`https://ipfs.io/ipfs/${ipfsHash}`);
+                    const contentType = metadataRes.headers.get("content-type");
+                    if (contentType && contentType.includes("application/json")) {
+                      metadata = await metadataRes.json();
+                    } else {
+                      // Try to parse as text if not JSON
+                      metadata = { image: `https://ipfs.io/ipfs/${ipfsHash}` };
+                    }
+                  } else if (url.startsWith("https://") || url.startsWith("http://")) {
+                    const metadataRes = await fetch(url);
+                    const contentType = metadataRes.headers.get("content-type");
+                    if (contentType && contentType.includes("application/json")) {
+                      metadata = await metadataRes.json();
+                    } else {
+                      metadata = { image: url };
+                    }
+                  } else {
+                    // Fallback: treat as direct image URL
+                    metadata = { image: url };
+                  }
+                } catch (metaErr) {
+                  console.error("Error fetching/parsing metadata for asset:", asset["asset-id"], metaErr);
+                  metadata = { image: url };
+                }
 
-            // Handle IPFS
-            if (url.startsWith("ipfs://")) {
-              const ipfsHash = url.replace("ipfs://", "");
-              const metadataRes = await fetch(`https://ipfs.io/ipfs/${ipfsHash}`);
-              const contentType = metadataRes.headers.get("content-type");
-
-              if (contentType?.includes("application/json")) {
-                metadata = await metadataRes.json();
-              }
-            }
-
-            // Handle normal HTTPS
-            else if (url.startsWith("https://") || url.startsWith("http://")) {
-              const metadataRes = await fetch(url);
-              const contentType = metadataRes.headers.get("content-type");
-
-              if (contentType?.includes("application/json")) {
-                metadata = await metadataRes.json();
-              }
-            }
-
-            return {
-              ...asset,
-              metadata,
-            };
+                return {
+                  ...asset,
+                  metadata,
+                };
           } catch (err) {
             console.error("Error fetching metadata for asset:", asset["asset-id"], err);
             return { ...asset, metadata: null };
