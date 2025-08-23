@@ -58,32 +58,44 @@ const NFTForm: React.FC<NFTFormProps> = ({ onComplete, account, ipfsUrl }) => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="max-w-md mx-auto bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 space-y-6 border border-white/20">
+      <h2 className="text-2xl font-bold text-blue-300 mb-4 text-center tracking-tight drop-shadow">Mint Your NFT</h2>
       {Object.keys(form).map((key) => (
         <div key={key} className="space-y-1">
-          <label htmlFor={key} className="text-sm text-gray-300 capitalize">
-            {key}
+          <label htmlFor={key} className="text-sm text-blue-200 capitalize font-semibold">
+            {key === "unitName" ? "Unit Name" : key === "assetName" ? "Asset Name" : key.charAt(0).toUpperCase() + key.slice(1)}
           </label>
-          <input
-            id={key}
-            name={key}
-            value={form[key as keyof typeof form]}
-            onChange={handleChange}
-            placeholder={key}
-            className="bg-black/50 text-white placeholder-gray-400 border border-gray-600 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          <div className="relative">
+            <input
+              id={key}
+              name={key}
+              value={form[key as keyof typeof form]}
+              onChange={handleChange}
+              placeholder={key === "unitName" ? "e.g. ART" : key === "assetName" ? "e.g. My NFT" : key}
+              className="bg-black/40 text-white placeholder-gray-400 border border-blue-400/30 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 transition shadow"
+            />
+            {/* Icon for input */}
+            <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-400 text-lg pointer-events-none">
+              {key === "unitName" ? "🔤" : key === "assetName" ? "🏷️" : key === "total" ? "#" : key === "decimals" ? ".0" : ""}
+            </span>
+          </div>
         </div>
       ))}
 
       <button
         onClick={handleSubmit}
         disabled={loading}
-        className={`w-full px-4 py-2 rounded bg-blue-600 text-white font-semibold shadow hover:bg-blue-500 transition disabled:opacity-50`}
+        className={`w-full px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-700 text-white font-bold shadow-lg hover:from-blue-600 hover:to-blue-800 transition disabled:opacity-50 disabled:cursor-not-allowed mt-4`}
       >
-        {loading ? "⏳ Minting..." : "🎨 Create NFT"}
+        {loading ? "⏳ Minting..." : "🎨 Mint NFT"}
       </button>
 
-      {loading && <ProgressBar progress={progress} color="green" />}
+      {loading && (
+        <div className="mt-6">
+          <ProgressBar progress={progress} color="green" />
+          <p className="text-xs text-green-300 mt-2 text-center animate-pulse">Minting in progress...</p>
+        </div>
+      )}
     </div>
   );
 };

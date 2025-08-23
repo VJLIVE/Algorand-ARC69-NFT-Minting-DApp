@@ -82,64 +82,75 @@ const MyNFTs = () => {
   fetchNFTs();
 }, [account]);
 
-    return (
-        <div className="max-w-5xl mx-auto py-8 text-white">
-            <h1 className="text-3xl font-bold mb-6">My NFTs</h1>
+  return (
+    <div className="min-h-screen w-full flex flex-col items-center justify-start bg-gradient-to-br from-[#0f2027] via-[#2c5364] to-[#232526] py-12 px-2">
+      <div className="max-w-6xl w-full mx-auto">
+        <h1 className="text-4xl font-extrabold mb-8 text-center text-blue-300 drop-shadow-lg tracking-tight">My NFTs</h1>
 
-            {!account ? (
-                <p>Please connect your wallet to view NFTs.</p>
-            ) : loading ? (
-                <p>Loading your NFTs...</p>
-            ) : assets.length === 0 ? (
-                <p>No NFTs found.</p>
-            ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                    {assets.map((asset, idx) => (
-                        <div
-                            key={idx}
-                            className="bg-white/10 border border-white/20 p-4 rounded-xl backdrop-blur"
-                        >
-                            {asset.metadata?.image ? (
-                                <img
-                                    src={
-                                        asset.metadata.image.startsWith("ipfs://")
-                                            ? `https://ipfs.io/ipfs/${asset.metadata.image.replace("ipfs://", "")}`
-                                            : asset.metadata.image
-                                    }
-                                    alt={asset.metadata.name || "NFT"}
-                                    className="w-full h-48 object-cover rounded-lg mb-3"
-                                />
-                            ) : (
-                                <div className="w-full h-48 bg-gray-800 rounded-lg flex items-center justify-center mb-3">
-                                    <span className="text-xs text-gray-400">No Image</span>
-                                </div>
-                            )}
-              <p className="text-sm font-semibold mb-1">
-                {asset.title || asset.metadata?.name || "Unnamed NFT"}
-              </p>
-              <p className="text-xs mb-1">
-                <span className="font-bold">Unit Name:</span> {asset.unitName || "-"}
-              </p>
-              <p className="text-xs mb-1">
-                <span className="font-bold">Title:</span> {asset.title || "-"}
-              </p>
-              <p className="font-mono text-xs break-words">
-                <span className="font-bold">Asset ID:</span> {asset["asset-id"]}
-              </p>
-              <a
-                href={`https://testnet.explorer.perawallet.app/asset/${asset["asset-id"]}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-400 text-sm mt-2 block"
+        {!account ? (
+          <div className="flex flex-col items-center justify-center py-20">
+            <p className="text-lg text-gray-300 bg-black/30 px-6 py-4 rounded-xl shadow-lg">Please connect your wallet to view NFTs.</p>
+          </div>
+        ) : loading ? (
+          <div className="flex flex-col items-center justify-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-400 border-opacity-50 mb-4"></div>
+            <p className="text-lg text-gray-300">Loading your NFTs...</p>
+          </div>
+        ) : assets.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20">
+            <p className="text-lg text-gray-300 bg-black/30 px-6 py-4 rounded-xl shadow-lg">No NFTs found.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            {assets.map((asset, idx) => (
+              <div
+                key={idx}
+                className="relative bg-white/10 border border-white/20 p-5 rounded-2xl shadow-xl backdrop-blur-lg transition-transform hover:scale-105 hover:shadow-2xl flex flex-col items-center"
               >
-                View on Explorer
-              </a>
-                        </div>
-                    ))}
+                {asset.metadata?.image ? (
+                  <img
+                    src={
+                      asset.metadata.image.startsWith("ipfs://")
+                        ? `https://ipfs.io/ipfs/${asset.metadata.image.replace("ipfs://", "")}`
+                        : asset.metadata.image
+                    }
+                    alt={asset.metadata.name || "NFT"}
+                    className="w-full h-48 object-cover rounded-xl mb-4 border-2 border-blue-400/30 shadow-md"
+                  />
+                ) : (
+                  <div className="w-full h-48 bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900 rounded-xl flex items-center justify-center mb-4 border-2 border-gray-700">
+                    <span className="text-xs text-gray-400">No Image</span>
+                  </div>
+                )}
+                <div className="w-full flex flex-col items-center">
+                  <p className="text-lg font-bold text-blue-200 mb-1 text-center truncate w-full" title={asset.title || asset.metadata?.name || "Unnamed NFT"}>
+                    {asset.title || asset.metadata?.name || "Unnamed NFT"}
+                  </p>
+                  <p className="text-xs text-gray-300 mb-1">
+                    <span className="font-bold text-blue-400">Unit Name:</span> {asset.unitName || "-"}
+                  </p>
+                  <p className="text-xs text-gray-300 mb-1">
+                    <span className="font-bold text-blue-400">Title:</span> {asset.title || "-"}
+                  </p>
+                  <p className="font-mono text-xs text-gray-400 break-words mb-2">
+                    <span className="font-bold text-blue-400">Asset ID:</span> {asset["asset-id"]}
+                  </p>
+                  <a
+                    href={`https://testnet.explorer.perawallet.app/asset/${asset["asset-id"]}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-400 text-xs mt-2 px-3 py-1 rounded-full bg-blue-400/10 hover:bg-blue-400/30 transition font-semibold shadow"
+                  >
+                    View on Explorer
+                  </a>
                 </div>
-            )}
-        </div>
-    );
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default MyNFTs;
